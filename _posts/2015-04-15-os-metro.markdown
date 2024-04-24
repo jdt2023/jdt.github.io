@@ -685,7 +685,7 @@ var gospelAjax = {"ajaxurl":"https:\/\/www.hidden-advent.org\/wp-admin\/admin-aj
         </div>
     </div>
 </div>
-<!-- 多语言弹框 -->
+<!-- 多种语言弹框 -->
 <div id="lang-wrapper" class="modal">
     <div class="modal-dialog">
         <div class="modal-box modal-content">
