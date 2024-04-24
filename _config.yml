@@ -2,10 +2,10 @@
 title: Hux Blog
 SEOTitle: JDT的博客 | JDT
 header-img:post-bg-nextgen-web-pwa.jpg
-email: huxpro@gmail.com
+email: 1972974@gmail.com
 description: "这里是 JDT的个人博客，与你一起追求真理 | 要做一个有 真理有人性的受造之物"
 keyword: "JDT Blog, 博客, 个人网站, 互联网, Web, JavaScript, React, React Native, 前端, 设计"
-url: "https://www.hidden-advent.org/" # your host, for absolute URL
+url: "https://www.youtube.com/" # your host, for absolute URL
 baseurl: "" # for example, '/blog' if your blog hosted on 'host/blog'
 
 # Publish posts or collection documents with a future date.
@@ -14,7 +14,7 @@ future: true
 # SNS settings
 RSS: false
 
-github_username: jdt2023
+github_username: 
 
 #facebook_username: shuqi lipro
 #linkedin_username:  firstname-lastname-idxxxx
@@ -69,7 +69,7 @@ netease_comment: false
 
 # Google Analytics
 ga_track_id: "UA-49627206-1" # Format: UA-xxxxxx-xx
-ga_domain: huangxuan.me
+ga_domain:
 
 # Sidebar settings
 sidebar: true # whether or not using Sidebar.
