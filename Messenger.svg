@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="68" height="68" viewBox="0 0 68 68">
+  <defs>
+    <radialGradient id="radial-gradient" cx="0.192" cy="0.995" r="1.09" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#09f"/>
+      <stop offset="0.61" stop-color="#a033ff"/>
+      <stop offset="0.935" stop-color="#ff5280"/>
+      <stop offset="1" stop-color="#ff7061"/>
+    </radialGradient>
+  </defs>
+  <g id="Messenger-BRC-10.7.2020" transform="translate(-6.249 -8.249)">
+    <g id="logo" transform="translate(6.249 8.249)">
+      <path id="Path" d="M146,122c-19.153,0-34,14.03-34,32.98a32.259,32.259,0,0,0,10.678,24.394,2.715,2.715,0,0,1,.913,1.939l.185,6.048a2.72,2.72,0,0,0,3.817,2.405l6.749-2.979a2.714,2.714,0,0,1,1.816-.133A37.078,37.078,0,0,0,146,187.96c19.153,0,34-14.03,34-32.98S165.153,122,146,122Z" transform="translate(-112 -122)" fill-rule="evenodd" fill="url(#radial-gradient)"/>
+      <path id="Path-2" data-name="Path" d="M268.978,410.8,279.022,395.1a5.174,5.174,0,0,1,7.416-1.349l7.989,5.905a2.075,2.075,0,0,0,2.471-.007l10.789-8.07a1.614,1.614,0,0,1,2.356,2.129L300,409.41a5.174,5.174,0,0,1-7.416,1.349l-7.989-5.905a2.076,2.076,0,0,0-2.471.007l-10.789,8.07A1.614,1.614,0,0,1,268.978,410.8Z" transform="translate(-255.511 -368.253)" fill="#fff" fill-rule="evenodd"/>
+    </g>
+  </g>
+</svg>
