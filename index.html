@@ -14,7 +14,7 @@
         header {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 0;
+            padding: 20px 0;
             text-align: center;
         }
         nav {
@@ -52,11 +52,49 @@
             bottom: 0;
             width: 100%;
         }
+        .section-title {
+            margin-top: 0;
+        }
+        .community-item, .testimony-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .community-item img, .testimony-item img {
+            border-radius: 50%;
+            margin-right: 15px;
+            width: 50px;
+            height: 50px;
+        }
+        .community-item div, .testimony-item div {
+            flex: 1;
+        }
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .contact-form input, .contact-form textarea {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .contact-form button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .contact-form button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>国际基督徒交流群</h1>
+        <p>连接世界各地的基督徒，共享信仰，共同成长</p>
     </header>
     <nav>
         <a href="#about">关于我们</a>
@@ -66,20 +104,67 @@
     </nav>
     <main>
         <section id="about">
-            <h2>关于我们</h2>
-            <p>国际基督徒交流群是一个汇集了来自世界各地的基督徒的网络社群。我们在这里分享信仰、互相鼓励、共同成长。</p>
+            <h2 class="section-title">关于我们</h2>
+            <p>国际基督徒交流群是一个汇集了来自世界各地的基督徒的网络社群。在这里，我们分享信仰经历、教义理解和生活见闻，互相鼓励和支持，共同在主里成长。</p>
+            <img src="about-us.jpg" alt="关于我们" style="width:100%; height:auto; margin-top:20px;">
         </section>
         <section id="community">
-            <h2>社区活动</h2>
-            <p>我们定期举办在线祷告会、圣经学习小组、灵修分享等活动，欢迎大家参加。</p>
+            <h2 class="section-title">社区活动</h2>
+            <div class="community-item">
+                <img src="prayer.jpg" alt="祷告会">
+                <div>
+                    <h3>在线祷告会</h3>
+                    <p>每周五晚上8点，我们都会举办在线祷告会，欢迎大家加入，一起在主里祷告和分享。</p>
+                </div>
+            </div>
+            <div class="community-item">
+                <img src="bible-study.jpg" alt="圣经学习">
+                <div>
+                    <h3>圣经学习小组</h3>
+                    <p>每周三晚上7点，我们有圣经学习小组，深入探讨圣经教义和生活应用。</p>
+                </div>
+            </div>
+            <div class="community-item">
+                <img src="fellowship.jpg" alt="团契活动">
+                <div>
+                    <h3>团契活动</h3>
+                    <p>每月一次的线下团契活动，增进彼此的了解和友谊，共同在主里成长。</p>
+                </div>
+            </div>
         </section>
         <section id="testimonies">
-            <h2>信仰见证</h2>
-            <p>在这里，您可以阅读来自不同国家、不同文化背景的基督徒的信仰见证，了解他们的属灵成长故事。</p>
+            <h2 class="section-title">信仰见证</h2>
+            <div class="testimony-item">
+                <img src="testimony1.jpg" alt="见证1">
+                <div>
+                    <h3>李先生的见证</h3>
+                    <p>来自中国的李先生分享了他在事业低谷时，如何通过信仰找到新的希望和力量的经历。</p>
+                </div>
+            </div>
+            <div class="testimony-item">
+                <img src="testimony2.jpg" alt="见证2">
+                <div>
+                    <h3>王小姐的见证</h3>
+                    <p>来自越南的王小姐讲述了她在家庭和信仰之间找到平衡，并带领家人一起信主的故事。</p>
+                </div>
+            </div>
+            <div class="testimony-item">
+                <img src="testimony3.jpg" alt="见证3">
+                <div>
+                    <h3>陈牧师的见证</h3>
+                    <p>陈牧师分享了他如何从一个普通的信徒成长为一名牧师，并在不同国家传福音的经历。</p>
+                </div>
+            </div>
         </section>
         <section id="contact">
-            <h2>联系我们</h2>
-            <p>如果您有任何问题或建议，请通过电子邮件联系我们：info@christiancommunity.com</p>
+            <h2 class="section-title">联系我们</h2>
+            <p>如果您有任何问题或建议，请通过下面的表单联系我们：</p>
+            <form class="contact-form" action="submit_form.php" method="post">
+                <input type="text" name="name" placeholder="姓名" required>
+                <input type="email" name="email" placeholder="电子邮件" required>
+                <textarea name="message" placeholder="您的留言" rows="5" required></textarea>
+                <button type="submit">提交</button>
+            </form>
         </section>
     </main>
     <footer>
