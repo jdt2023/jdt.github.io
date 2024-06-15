@@ -48,6 +48,7 @@
             padding: 10px;
             height: 300px;
             overflow-y: auto;
+            background: #fafafa;
         }
         .input-group {
             display: flex;
@@ -125,9 +126,11 @@
     </footer>
     <script>
         function sendMessage() {
+            console.log('sendMessage function called');
             const chatBox = document.getElementById('chat-box');
             const userInput = document.getElementById('user-input');
             const message = userInput.value.trim();
+            console.log('User input:', message);
             if (message) {
                 const userMessage = document.createElement('div');
                 userMessage.textContent = `你: ${message}`;
