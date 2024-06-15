@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -123,16 +125,6 @@
         <p>&copy; 2024 个人博客. 版权所有.</p>
     </footer>
     <script>
-        const socket = new WebSocket('wss://echo.websocket.org'); // 这是一个用于测试的WebSocket服务器
-
-        socket.onmessage = function(event) {
-            const chatBox = document.getElementById('chat-box');
-            const botMessage = document.createElement('div');
-            botMessage.textContent = `回复: ${event.data}`;
-            chatBox.appendChild(botMessage);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        };
-
         function sendMessage() {
             const chatBox = document.getElementById('chat-box');
             const userInput = document.getElementById('user-input');
@@ -141,8 +133,16 @@
                 const userMessage = document.createElement('div');
                 userMessage.textContent = `你: ${message}`;
                 chatBox.appendChild(userMessage);
-                socket.send(message);
                 userInput.value = '';
+
+                // 模拟自动回复
+                setTimeout(() => {
+                    const botMessage = document.createElement('div');
+                    botMessage.textContent = '自动回复: 谢谢你的消息！';
+                    chatBox.appendChild(botMessage);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 1000);
+
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
         }
