@@ -11,6 +11,9 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         header {
             background-color: #333;
@@ -34,6 +37,7 @@
         }
         .container {
             padding: 20px;
+            flex: 1;
         }
         .chat-container {
             max-width: 600px;
@@ -76,10 +80,11 @@
             background-color: #333;
             color: #fff;
             text-align: center;
-            padding: 10px 0;
+            padding: 5px 0; /* 缩小高度 */
             position: fixed;
             bottom: 0;
             width: 100%;
+            font-size: 12px; /* 缩小字体 */
         }
     </style>
 </head>
