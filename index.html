@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -146,6 +145,17 @@
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
         }
+
+        // 调试信息
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('页面已加载');
+            const chatBox = document.getElementById('chat-box');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.querySelector('.input-group button');
+            console.log('聊天框:', chatBox);
+            console.log('输入框:', userInput);
+            console.log('发送按钮:', sendButton);
+        });
     </script>
 </body>
 </html>
