@@ -77,6 +77,13 @@
         .input-group button:hover {
             background: #555;
         }
+        .input-group .voice-button {
+            background: #007bff;
+            margin-left: 10px;
+        }
+        .input-group .voice-button:hover {
+            background: #0056b3;
+        }
         .delete-button {
             margin-top: 10px;
             padding: 10px;
@@ -136,6 +143,7 @@
                 <div class="input-group">
                     <input type="text" id="user-input" placeholder="输入你的消息...">
                     <button onclick="sendMessage()">发送</button>
+                    <button class="voice-button" onclick="startVoiceRecognition()">语音输入</button>
                 </div>
                 <button class="delete-button" onclick="deleteMessages()">删除聊天记录</button>
             </div>
@@ -211,6 +219,30 @@
             localStorage.removeItem('chatMessages');
             const chatBox = document.getElementById('chat-box');
             chatBox.innerHTML = '';
+        }
+
+        function startVoiceRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'zh-CN';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            recognition.onresult = function (event) {
+                const userInput = document.getElementById('user-input');
+                const transcript = event.results[0][0].transcript;
+                userInput.value = transcript;
+                sendMessage();
+            };
+
+            recognition.onspeechend = function () {
+                recognition.stop();
+            };
+
+            recognition.onerror = function (event) {
+                console.error('语音识别错误:', event.error);
+            };
         }
 
         document.addEventListener('DOMContentLoaded', () => {
