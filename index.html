@@ -1,5 +1,7 @@
 
 
+### HTML 和 CSS
+
 ```html
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -204,7 +206,6 @@
                     chatBox.appendChild(videoElement);
                 }
                 chatBox.scrollTop = chatBox.scrollHeight;
-                saveMessage(message);
             };
 
             socket.onclose = function () {
@@ -229,7 +230,6 @@
                 userInput.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
                 socket.send(JSON.stringify(userMessage));
-                saveMessage(userMessage);
             }
         }
 
@@ -257,16 +257,16 @@
 
         function sendImage(imageSrc) {
             const chatBox = document.getElementById('chat-box');
-            const userMessage = { type: 'image', content: `你发送了一张图片: ${imageSrc}` };
+            const userMessage = { type: 'image', content: imageSrc };
             const imgElement = document.createElement('img');
             imgElement.src = imageSrc;
             imgElement.style.maxWidth = '100%';
             chatBox.appendChild(imgElement);
             chatBox.scrollTop = chatBox.scrollHeight;
             socket.send(JSON.stringify(userMessage));
-            saveMessage(userMessage);
         }
 
         function sendVideo(videoSrc) {
             const chatBox = document.getElementById('chat-box');
-            const userMessage = {
+            const userMessage = { type: 'video', content: videoSrc };
+            const videoElement = document.createElement('
