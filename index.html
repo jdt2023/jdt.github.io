@@ -1,3 +1,8 @@
+添加图片发送功能需要前端和后端的配合。在前端，用户选择图片并将其上传到服务器，然后在聊天框中显示图片。服务器会接收图片并将其广播给所有连接的客户端。
+
+### 1. 更新 HTML 代码
+
+在输入框旁边添加一个图片上传按钮：
 
 ```html
 <!DOCTYPE html>
@@ -97,6 +102,13 @@
         .delete-button:hover {
             background: #c9302c;
         }
+        .input-group .image-button {
+            background: #28a745;
+            margin-left: 10px;
+        }
+        .input-group .image-button:hover {
+            background: #218838;
+        }
         footer {
             background-color: #333;
             color: #fff;
@@ -144,6 +156,8 @@
                     <input type="text" id="user-input" placeholder="输入你的消息...">
                     <button onclick="sendMessage()">发送</button>
                     <button class="voice-button" onclick="startVoiceRecognition()">语音输入</button>
+                    <input type="file" id="image-input" style="display: none;" accept="image/*">
+                    <button class="image-button" onclick="document.getElementById('image-input').click()">发送图片</button>
                 </div>
                 <button class="delete-button" onclick="deleteMessages()">删除聊天记录</button>
             </div>
@@ -164,10 +178,17 @@
 
             socket.onmessage = function (event) {
                 const chatBox = document.getElementById('chat-box');
-                const message = event.data;
-                const messageElement = document.createElement('div');
-                messageElement.textContent = message;
-                chatBox.appendChild(messageElement);
+                const message = JSON.parse(event.data);
+                if (message.type === 'text') {
+                    const messageElement = document.createElement('div');
+                    messageElement.textContent = message.content;
+                    chatBox.appendChild(messageElement);
+                } else if (message.type === 'image') {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = message.content;
+                    imgElement.style.maxWidth = '100%';
+                    chatBox.appendChild(imgElement);
+                }
                 chatBox.scrollTop = chatBox.scrollHeight;
                 saveMessage(message);
             };
@@ -187,15 +208,27 @@
             const userInput = document.getElementById('user-input');
             const message = userInput.value.trim();
             if (message) {
-                const userMessage = `你: ${message}`;
+                const userMessage = { type: 'text', content: `你: ${message}` };
                 const userMessageElement = document.createElement('div');
-                userMessageElement.textContent = userMessage;
+                userMessageElement.textContent = userMessage.content;
                 chatBox.appendChild(userMessageElement);
                 userInput.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
-                socket.send(message);
+                socket.send(JSON.stringify(userMessage));
                 saveMessage(userMessage);
             }
+        }
+
+        function sendImage(imageSrc) {
+            const chatBox = document.getElementById('chat-box');
+            const userMessage = { type: 'image', content: imageSrc };
+            const imgElement = document.createElement('img');
+            imgElement.src = imageSrc;
+            imgElement.style.maxWidth = '100%';
+            chatBox.appendChild(imgElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            socket.send(JSON.stringify(userMessage));
+            saveMessage(userMessage);
         }
 
         function saveMessage(message) {
@@ -208,9 +241,16 @@
             const chatBox = document.getElementById('chat-box');
             let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
             messages.forEach(message => {
-                const messageElement = document.createElement('div');
-                messageElement.textContent = message;
-                chatBox.appendChild(messageElement);
+                if (message.type === 'text') {
+                    const messageElement = document.createElement('div');
+                    messageElement.textContent = message.content;
+                    chatBox.appendChild(messageElement);
+                } else if (message.type === 'image') {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = message.content;
+                    imgElement.style.maxWidth = '100%';
+                    chatBox.appendChild(imgElement);
+                }
             });
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -240,23 +280,4 @@
                 recognition.stop();
             };
 
-            recognition.onerror = function (event) {
-                console.error('语音识别错误:', event.error);
-            };
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadMessages();
-            connectWebSocket();
-            const sendButton = document.querySelector('.input-group button');
-            sendButton.addEventListener('click', sendMessage);
-            document.getElementById('user-input').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-        });
-    </script>
-</body>
-</html>
-```
+            recognition.onerror
