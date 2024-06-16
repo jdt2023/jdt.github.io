@@ -295,7 +295,62 @@
             });
             fileInput.click();
         }
+
+
+          <input type="file" id="fileInput" class="file-input">
+    <button onclick="document.getElementById('fileInput').click()">上传文件</button>
+
+    <script>
+        let socket;
+
+        // WebSocket 连接等相关代码
+
+        function uploadFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const dataURL = event.target.result;
+                // 发送文件数据
+                socket.send(dataURL);
+                // 显示文件预览（可选）
+                const chatBox = document.getElementById('chat-box');
+                const fileElement = document.createElement('img'); // 如果是视频文件，可以创建 <video> 元素
+                fileElement.src = dataURL;
+                chatBox.appendChild(fileElement);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function sendMessage() {
+            // 发送文本消息的代码
+        }
+
+        function startVoiceRecognition() {
+            // 语音输入的代码
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化 WebSocket 连接等相关代码
+
+            const sendButton = document.querySelector('.input-group button');
+            sendButton.addEventListener('click', sendMessage);
+
+            document.getElementById('user-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            document.getElementById('fileInput').addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    uploadFile(file);
+                }
+            });
+        });
     </script>
+
+    
 
 </body>
 </html>
