@@ -1,3 +1,7 @@
+
+
+### 更新后的 HTML 和 CSS
+
 ```html
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -53,6 +57,26 @@
             height: 300px;
             overflow-y: auto;
             background: #fafafa;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .message.user {
+            background-color: #e1ffc7;
+            align-self: flex-end;
+            text-align: right;
+        }
+        .message.other {
+            background-color: #f1f1f1;
+            align-self: flex-start;
+            text-align: left;
+        }
+        .message img, .message video {
+            max-width: 100%;
+            display: block;
+            margin: 5px 0;
         }
         .input-group {
             display: flex;
@@ -185,22 +209,27 @@
             socket.onmessage = function (event) {
                 const chatBox = document.getElementById('chat-box');
                 const message = JSON.parse(event.data);
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                if (message.sender === 'user') {
+                    messageElement.classList.add('user');
+                } else {
+                    messageElement.classList.add('other');
+                }
+
                 if (message.type === 'text') {
-                    const messageElement = document.createElement('div');
                     messageElement.textContent = message.content;
-                    chatBox.appendChild(messageElement);
                 } else if (message.type === 'image') {
                     const imgElement = document.createElement('img');
                     imgElement.src = message.content;
-                    imgElement.style.maxWidth = '100%';
-                    chatBox.appendChild(imgElement);
+                    messageElement.appendChild(imgElement);
                 } else if (message.type === 'video') {
                     const videoElement = document.createElement('video');
                     videoElement.src = message.content;
                     videoElement.controls = true;
-                    videoElement.style.maxWidth = '100%';
-                    chatBox.appendChild(videoElement);
+                    messageElement.appendChild(videoElement);
                 }
+                chatBox.appendChild(messageElement);
                 chatBox.scrollTop = chatBox.scrollHeight;
             };
 
@@ -219,8 +248,9 @@
             const userInput = document.getElementById('user-input');
             const message = userInput.value.trim();
             if (message) {
-                const userMessage = { type: 'text', content: `你: ${message}` };
+                const userMessage = { sender: 'user', type: 'text', content: `你: ${message}` };
                 const userMessageElement = document.createElement('div');
+                userMessageElement.classList.add('message', 'user');
                 userMessageElement.textContent = userMessage.content;
                 chatBox.appendChild(userMessageElement);
                 userInput.value = '';
@@ -247,22 +277,4 @@
                 reader.onload = function (e) {
                     sendVideo(e.target.result);
                 };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function sendImage(imageSrc) {
-            const chatBox = document.getElementById('chat-box');
-            const userMessage = { type: 'image', content: imageSrc };
-            const imgElement = document.createElement('img');
-            imgElement.src = imageSrc;
-            imgElement.style.maxWidth = '100%';
-            chatBox.appendChild(imgElement);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            socket.send(JSON.stringify(userMessage));
-        }
-
-        function sendVideo(videoSrc) {
-            const chatBox = document.getElementById('chat-box');
-            const userMessage = { type: 'video', content: videoSrc };
-            const videoElement = document.createElement('
+                reader.readAs
