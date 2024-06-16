@@ -1,8 +1,8 @@
-添加图片发送功能需要前端和后端的配合。在前端，用户选择图片并将其上传到服务器，然后在聊天框中显示图片。服务器会接收图片并将其广播给所有连接的客户端。
+为了确保图片和视频上传按钮正常显示，并且能选择图片和视频，首先需要确保 HTML 中有合适的样式和结构。其次，需要处理图片或视频选择的逻辑。
 
-### 1. 更新 HTML 代码
+### 更新 HTML 代码
 
-在输入框旁边添加一个图片上传按钮：
+在输入框旁边添加图片和视频上传按钮：
 
 ```html
 <!DOCTYPE html>
@@ -89,6 +89,20 @@
         .input-group .voice-button:hover {
             background: #0056b3;
         }
+        .input-group .image-button {
+            background: #28a745;
+            margin-left: 10px;
+        }
+        .input-group .image-button:hover {
+            background: #218838;
+        }
+        .input-group .video-button {
+            background: #ffc107;
+            margin-left: 10px;
+        }
+        .input-group .video-button:hover {
+            background: #e0a800;
+        }
         .delete-button {
             margin-top: 10px;
             padding: 10px;
@@ -101,13 +115,6 @@
         }
         .delete-button:hover {
             background: #c9302c;
-        }
-        .input-group .image-button {
-            background: #28a745;
-            margin-left: 10px;
-        }
-        .input-group .image-button:hover {
-            background: #218838;
         }
         footer {
             background-color: #333;
@@ -158,6 +165,8 @@
                     <button class="voice-button" onclick="startVoiceRecognition()">语音输入</button>
                     <input type="file" id="image-input" style="display: none;" accept="image/*">
                     <button class="image-button" onclick="document.getElementById('image-input').click()">发送图片</button>
+                    <input type="file" id="video-input" style="display: none;" accept="video/*">
+                    <button class="video-button" onclick="document.getElementById('video-input').click()">发送视频</button>
                 </div>
                 <button class="delete-button" onclick="deleteMessages()">删除聊天记录</button>
             </div>
@@ -188,6 +197,12 @@
                     imgElement.src = message.content;
                     imgElement.style.maxWidth = '100%';
                     chatBox.appendChild(imgElement);
+                } else if (message.type === 'video') {
+                    const videoElement = document.createElement('video');
+                    videoElement.src = message.content;
+                    videoElement.controls = true;
+                    videoElement.style.maxWidth = '100%';
+                    chatBox.appendChild(videoElement);
                 }
                 chatBox.scrollTop = chatBox.scrollHeight;
                 saveMessage(message);
@@ -231,6 +246,19 @@
             saveMessage(userMessage);
         }
 
+        function sendVideo(videoSrc) {
+            const chatBox = document.getElementById('chat-box');
+            const userMessage = { type: 'video', content: videoSrc };
+            const videoElement = document.createElement('video');
+            videoElement.src = videoSrc;
+            videoElement.controls = true;
+            videoElement.style.maxWidth = '100%';
+            chatBox.appendChild(videoElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            socket.send(JSON.stringify(userMessage));
+            saveMessage(userMessage);
+        }
+
         function saveMessage(message) {
             let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
             messages.push(message);
@@ -242,42 +270,4 @@
             let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
             messages.forEach(message => {
                 if (message.type === 'text') {
-                    const messageElement = document.createElement('div');
-                    messageElement.textContent = message.content;
-                    chatBox.appendChild(messageElement);
-                } else if (message.type === 'image') {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = message.content;
-                    imgElement.style.maxWidth = '100%';
-                    chatBox.appendChild(imgElement);
-                }
-            });
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function deleteMessages() {
-            localStorage.removeItem('chatMessages');
-            const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML = '';
-        }
-
-        function startVoiceRecognition() {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'zh-CN';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.start();
-
-            recognition.onresult = function (event) {
-                const userInput = document.getElementById('user-input');
-                const transcript = event.results[0][0].transcript;
-                userInput.value = transcript;
-                sendMessage();
-            };
-
-            recognition.onspeechend = function () {
-                recognition.stop();
-            };
-
-            recognition.onerror
+                    const messageElement =
