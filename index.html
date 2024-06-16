@@ -140,10 +140,29 @@
                 chatBox.appendChild(userMessage);
                 userInput.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
+                saveMessage(`你: ${message}`);
             }
         }
 
+        function saveMessage(message) {
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.push(message);
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
+
+        function loadMessages() {
+            const chatBox = document.getElementById('chat-box');
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message;
+                chatBox.appendChild(messageElement);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            loadMessages();
             const sendButton = document.querySelector('.input-group button');
             sendButton.addEventListener('click', sendMessage);
             document.getElementById('user-input').addEventListener('keypress', function (e) {
@@ -156,3 +175,4 @@
 </body>
 </html>
 ```
+
