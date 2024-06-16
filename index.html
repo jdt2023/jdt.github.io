@@ -197,14 +197,13 @@
         let socket;
 
         function connectWebSocket() {
-            socket = new WebSocket('ws://localhost:8080');
+            socket = new WebSocket('wss://YOUR_WEBSOCKET_SERVER_URL');
 
             socket.onopen = function () {
                 console.log('WebSocket连接已建立');
             };
 
             socket.onmessage = function (event) {
-                const chatBox = document.getElementById('chat-box');
                 const message = JSON.parse(event.data);
                 displayMessage(message);
             };
@@ -271,4 +270,8 @@
                     displayMessage(userMessage);
                     socket.send(JSON.stringify(userMessage));
                 };
-                reader
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElement
