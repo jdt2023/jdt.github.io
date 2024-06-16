@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -141,8 +140,11 @@
                 userMessage.textContent = `你: ${message}`;
                 chatBox.appendChild(userMessage);
                 userInput.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
 
-              
+        // 调试信息
         document.addEventListener('DOMContentLoaded', () => {
             console.log('页面已加载');
             const chatBox = document.getElementById('chat-box');
