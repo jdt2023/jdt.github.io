@@ -1,10 +1,14 @@
+好的，我们将一步一步地确保代码实现你需要的功能：双向聊天，包括文本、图片和视频消息的发送和接收。以下是完整的 `index.html` 文件代码：
 
+### 完整的 `index.html`
+
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人博客</title>
+    <title>个人博客聊天功能</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -99,26 +103,17 @@
         .input-group button:hover {
             background: #555;
         }
-        .input-group .voice-button {
-            background: #007bff;
+        .input-group .image-button, .input-group .video-button {
             margin-left: 10px;
-            border: 2px solid #0056b3;
-        }
-        .input-group .voice-button:hover {
-            background: #0056b3;
         }
         .input-group .image-button {
             background: #28a745;
-            margin-left: 10px;
-            border: 2px solid #218838;
         }
         .input-group .image-button:hover {
             background: #218838;
         }
         .input-group .video-button {
             background: #ffc107;
-            margin-left: 10px;
-            border: 2px solid #e0a800;
         }
         .input-group .video-button:hover {
             background: #e0a800;
@@ -182,7 +177,6 @@
                 <div class="input-group">
                     <input type="text" id="user-input" placeholder="输入你的消息...">
                     <button onclick="sendMessage()">发送</button>
-                    <button class="voice-button" onclick="startVoiceRecognition()">语音输入</button>
                     <input type="file" id="image-input" style="display: none;" accept="image/*">
                     <button class="image-button" onclick="document.getElementById('image-input').click()">发送图片</button>
                     <input type="file" id="video-input" style="display: none;" accept="video/*">
@@ -243,30 +237,48 @@
         }
 
         function sendMessage() {
-            const chatBox = document.getElementById('chat-box');
             const userInput = document.getElementById('user-input');
             const message = userInput.value.trim();
             if (message) {
                 const userMessage = { sender: 'user', type: 'text', content: message };
-                const userMessageElement = document.createElement('div');
-                userMessageElement.classList.add('message', 'user');
-                userMessageElement.textContent = `你: ${message}`;
-                chatBox.appendChild(userMessageElement);
+                displayMessage(userMessage);
                 userInput.value = '';
-                chatBox.scrollTop = chatBox.scrollHeight;
                 socket.send(JSON.stringify(userMessage));
             }
         }
 
-        function sendImage(imageData) {
+        document.getElementById('image-input').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageData = e.target.result;
+                    const userMessage = { sender: 'user', type: 'image', content: imageData };
+                    displayMessage(userMessage);
+                    socket.send(JSON.stringify(userMessage));
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('video-input').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const videoData = e.target.result;
+                    const userMessage = { sender: 'user', type: 'video', content: videoData };
+                    displayMessage(userMessage);
+                    socket.send(JSON.stringify(userMessage));
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function displayMessage(message) {
             const chatBox = document.getElementById('chat-box');
-            const userMessage = { sender: 'user', type: 'image', content: imageData };
-            const userMessageElement = document.createElement('div');
-            userMessageElement.classList.add('message', 'user');
-            const imgElement = document.createElement('img');
-            imgElement.src = imageData;
-            userMessageElement.appendChild(imgElement);
-            chatBox.appendChild(userMessageElement);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            socket.send(JSON.stringify(userMessage));
-       
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            if (message.sender === 'user') {
+                messageElement.classList.add('user');
+            } else
