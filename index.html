@@ -258,33 +258,3 @@
     </script>
 </body>
 </html>
-```
-
-### 2. 添加语音识别功能
-
-在 JavaScript 中添加 `startVoiceRecognition` 函数来启动语音识别：
-
-```javascript
-function startVoiceRecognition() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'zh-CN';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.start();
-
-    recognition.onresult = function (event) {
-        const userInput = document.getElementById('user-input');
-        const transcript = event.results[0][0].transcript;
-        userInput.value = transcript;
-        sendMessage();
-    };
-
-    recognition.onspeechend = function () {
-        recognition.stop();
-    };
-
-    recognition.onerror = function (event) {
-        console.error('语音识别错误:', event.error);
-    };
-}
