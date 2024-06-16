@@ -198,28 +198,7 @@
             socket.onmessage = function (event) {
                 const chatBox = document.getElementById('chat-box');
                 const message = JSON.parse(event.data);
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message');
-                if (message.sender === 'user') {
-                    messageElement.classList.add('user');
-                } else {
-                    messageElement.classList.add('other');
-                }
-
-                if (message.type === 'text') {
-                    messageElement.textContent = message.content;
-                } else if (message.type === 'image') {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = message.content;
-                    messageElement.appendChild(imgElement);
-                } else if (message.type === 'video') {
-                    const videoElement = document.createElement('video');
-                    videoElement.src = message.content;
-                    videoElement.controls = true;
-                    messageElement.appendChild(videoElement);
-                }
-                chatBox.appendChild(messageElement);
-                chatBox.scrollTop = chatBox.scrollHeight;
+                displayMessage(message);
             };
 
             socket.onclose = function () {
@@ -241,6 +220,32 @@
                 userInput.value = '';
                 socket.send(JSON.stringify(userMessage));
             }
+        }
+
+        function displayMessage(message) {
+            const chatBox = document.getElementById('chat-box');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            if (message.sender === 'user') {
+                messageElement.classList.add('user');
+            } else {
+                messageElement.classList.add('other');
+            }
+
+            if (message.type === 'text') {
+                messageElement.textContent = message.content;
+            } else if (message.type === 'image') {
+                const imgElement = document.createElement('img');
+                imgElement.src = message.content;
+                messageElement.appendChild(imgElement);
+            } else if (message.type === 'video') {
+                const videoElement = document.createElement('video');
+                videoElement.src = message.content;
+                videoElement.controls = true;
+                messageElement.appendChild(videoElement);
+            }
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         document.getElementById('image-input').addEventListener('change', function() {
@@ -271,10 +276,12 @@
             }
         });
 
-        function displayMessage(message) {
+        function deleteMessages() {
             const chatBox = document.getElementById('chat-box');
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
-            if (message.sender === 'user') {
-                messageElement.classList.add('user');
-            } else
+            chatBox.innerHTML = '';
+        }
+
+        connectWebSocket();
+    </script>
+</body>
+</
