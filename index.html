@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人博客聊天功能</title>
+    <title>个人博客</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -53,29 +53,6 @@
             height: 300px;
             overflow-y: auto;
             background: #fafafa;
-            display: flex;
-            flex-direction: column;
-        }
-        .message {
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 4px;
-            max-width: 70%;
-        }
-        .message.user {
-            background-color: #e1ffc7;
-            align-self: flex-start;
-            text-align: left;
-        }
-        .message.other {
-            background-color: #f1f1f1;
-            align-self: flex-end;
-            text-align: right;
-        }
-        .message img, .message video, .message audio {
-            max-width: 100%;
-            display: block;
-            margin: 5px 0;
         }
         .input-group {
             display: flex;
@@ -99,25 +76,11 @@
         .input-group button:hover {
             background: #555;
         }
-        .input-group .image-button, .input-group .video-button, .input-group .audio-button {
+        .input-group .voice-button {
+            background: #007bff;
             margin-left: 10px;
         }
-        .input-group .image-button {
-            background: #28a745;
-        }
-        .input-group .image-button:hover {
-            background: #218838;
-        }
-        .input-group .video-button {
-            background: #ffc107;
-        }
-        .input-group .video-button:hover {
-            background: #e0a800;
-        }
-        .input-group .audio-button {
-            background: #007bff;
-        }
-        .input-group .audio-button:hover {
+        .input-group .voice-button:hover {
             background: #0056b3;
         }
         .delete-button {
@@ -179,12 +142,7 @@
                 <div class="input-group">
                     <input type="text" id="user-input" placeholder="输入你的消息...">
                     <button onclick="sendMessage()">发送</button>
-                    <input type="file" id="image-input" style="display: none;" accept="image/*">
-                    <button class="image-button" onclick="document.getElementById('image-input').click()">发送图片</button>
-                    <input type="file" id="video-input" style="display: none;" accept="video/*">
-                    <button class="video-button" onclick="document.getElementById('video-input').click()">发送视频</button>
-                    <input type="file" id="audio-input" style="display: none;" accept="audio/*">
-                    <button class="audio-button" onclick="document.getElementById('audio-input').click()">发送语音</button>
+                    <button class="voice-button" onclick="startVoiceRecognition()">语音输入</button>
                 </div>
                 <button class="delete-button" onclick="deleteMessages()">删除聊天记录</button>
             </div>
@@ -197,15 +155,20 @@
         let socket;
 
         function connectWebSocket() {
-            socket = new WebSocket('wss://YOUR_WEBSOCKET_SERVER_URL');
+            socket = new WebSocket('ws://localhost:8080');
 
             socket.onopen = function () {
                 console.log('WebSocket连接已建立');
             };
 
             socket.onmessage = function (event) {
-                const message = JSON.parse(event.data);
-                displayMessage(message);
+                const chatBox = document.getElementById('chat-box');
+                const message = event.data;
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message;
+                chatBox.appendChild(messageElement);
+                chatBox.scrollTop = chatBox.scrollHeight;
+                saveMessage(message);
             };
 
             socket.onclose = function () {
@@ -219,57 +182,75 @@
         }
 
         function sendMessage() {
+            const chatBox = document.getElementById('chat-box');
             const userInput = document.getElementById('user-input');
             const message = userInput.value.trim();
             if (message) {
-                const userMessage = { sender: 'user', type: 'text', content: message };
-                displayMessage(userMessage);
+                const userMessage = `你: ${message}`;
+                const userMessageElement = document.createElement('div');
+                userMessageElement.textContent = userMessage;
+                chatBox.appendChild(userMessageElement);
                 userInput.value = '';
-                socket.send(JSON.stringify(userMessage));
+                chatBox.scrollTop = chatBox.scrollHeight;
+                socket.send(message);
+                saveMessage(userMessage);
             }
         }
 
-        function displayMessage(message) {
-            const chatBox = document.getElementById('chat-box');
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
-            if (message.sender === 'user') {
-                messageElement.classList.add('user');
-            } else {
-                messageElement.classList.add('other');
-            }
+        function saveMessage(message) {
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.push(message);
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
 
-            if (message.type === 'text') {
-                messageElement.textContent = message.content;
-            } else if (message.type === 'image') {
-                const imgElement = document.createElement('img');
-                imgElement.src = message.content;
-                messageElement.appendChild(imgElement);
-            } else if (message.type === 'video') {
-                const videoElement = document.createElement('video');
-                videoElement.src = message.content;
-                videoElement.controls = true;
-                messageElement.appendChild(videoElement);
-            } else if (message.type === 'audio') {
-                const audioElement = document.createElement('audio');
-                audioElement.src = message.content;
-                audioElement.controls = true;
-                messageElement.appendChild(audioElement);
-            }
-            chatBox.appendChild(messageElement);
+        function loadMessages() {
+            const chatBox = document.getElementById('chat-box');
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message;
+                chatBox.appendChild(messageElement);
+            });
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        document.getElementById('image-input').addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageData = e.target.result;
-                    const userMessage = { sender: 'user', type: 'image', content: imageData };
-                    displayMessage(userMessage);
-                    socket.send(JSON.stringify(userMessage));
-                };
-                reader.readAsDataURL(file);
-            }
-       
+        function deleteMessages() {
+            localStorage.removeItem('chatMessages');
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = '';
+        }
+
+        function startVoiceRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'zh-CN';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            recognition.onresult = function (event) {
+                const userInput = document.getElementById('user-input');
+                const transcript = event.results[0][0].transcript;
+                userInput.value = transcript;
+                sendMessage();
+            };
+
+            recognition.onspeechend = function () {
+                recognition.stop();
+            };
+
+            recognition.onerror = function (event) {
+                console.error('语音识别错误:', event.error);
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMessages();
+            connectWebSocket();
+            const sendButton = document.querySelector('.input-group button');
+            sendButton.addEventListener('click', sendMessage);
+            document.getElementById('user-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+           
