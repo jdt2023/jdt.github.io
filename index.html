@@ -53,29 +53,6 @@
             height: 300px;
             overflow-y: auto;
             background: #fafafa;
-            display: flex;
-            flex-direction: column;
-        }
-        .message {
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 4px;
-            max-width: 70%;
-        }
-        .message.user {
-            background-color: #e1ffc7;
-            align-self: flex-start;
-            text-align: left;
-        }
-        .message.other {
-            background-color: #f1f1f1;
-            align-self: flex-end;
-            text-align: right;
-        }
-        .message img, .message video {
-            max-width: 100%;
-            display: block;
-            margin: 5px 0;
         }
         .input-group {
             display: flex;
@@ -102,26 +79,9 @@
         .input-group .voice-button {
             background: #007bff;
             margin-left: 10px;
-            border: 2px solid #0056b3;
         }
         .input-group .voice-button:hover {
             background: #0056b3;
-        }
-        .input-group .image-button {
-            background: #28a745;
-            margin-left: 10px;
-            border: 2px solid #218838;
-        }
-        .input-group .image-button:hover {
-            background: #218838;
-        }
-        .input-group .video-button {
-            background: #ffc107;
-            margin-left: 10px;
-            border: 2px solid #e0a800;
-        }
-        .input-group .video-button:hover {
-            background: #e0a800;
         }
         .delete-button {
             margin-top: 10px;
@@ -183,10 +143,6 @@
                     <input type="text" id="user-input" placeholder="输入你的消息...">
                     <button onclick="sendMessage()">发送</button>
                     <button class="voice-button" onclick="startVoiceRecognition()">语音输入</button>
-                    <input type="file" id="image-input" style="display: none;" accept="image/*">
-                    <button class="image-button" onclick="document.getElementById('image-input').click()">发送图片</button>
-                    <input type="file" id="video-input" style="display: none;" accept="video/*">
-                    <button class="video-button" onclick="document.getElementById('video-input').click()">发送视频</button>
                 </div>
                 <button class="delete-button" onclick="deleteMessages()">删除聊天记录</button>
             </div>
@@ -207,29 +163,12 @@
 
             socket.onmessage = function (event) {
                 const chatBox = document.getElementById('chat-box');
-                const message = JSON.parse(event.data);
+                const message = event.data;
                 const messageElement = document.createElement('div');
-                messageElement.classList.add('message');
-                if (message.sender === 'user') {
-                    messageElement.classList.add('user');
-                } else {
-                    messageElement.classList.add('other');
-                }
-
-                if (message.type === 'text') {
-                    messageElement.textContent = message.content;
-                } else if (message.type === 'image') {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = message.content;
-                    messageElement.appendChild(imgElement);
-                } else if (message.type === 'video') {
-                    const videoElement = document.createElement('video');
-                    videoElement.src = message.content;
-                    videoElement.controls = true;
-                    messageElement.appendChild(videoElement);
-                }
+                messageElement.textContent = message;
                 chatBox.appendChild(messageElement);
                 chatBox.scrollTop = chatBox.scrollHeight;
+                saveMessage(message);
             };
 
             socket.onclose = function () {
@@ -247,31 +186,105 @@
             const userInput = document.getElementById('user-input');
             const message = userInput.value.trim();
             if (message) {
-                const userMessage = { sender: 'user', type: 'text', content: message };
+                const userMessage = `你: ${message}`;
                 const userMessageElement = document.createElement('div');
-                userMessageElement.classList.add('message', 'user');
-                userMessageElement.textContent = `你: ${message}`;
+                userMessageElement.textContent = userMessage;
                 chatBox.appendChild(userMessageElement);
                 userInput.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
-                socket.send(JSON.stringify(userMessage));
+                socket.send(message);
+                saveMessage(userMessage);
             }
         }
 
-        document.getElementById('image-input').addEventListener('change', function () {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    sendImage(e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        function saveMessage(message) {
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.push(message);
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
 
-        document.getElementById('video-input').addEventListener('change', function () {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                   
+        function loadMessages() {
+            const chatBox = document.getElementById('chat-box');
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message;
+                chatBox.appendChild(messageElement);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function deleteMessages() {
+            localStorage.removeItem('chatMessages');
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = '';
+        }
+
+        function startVoiceRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'zh-CN';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            recognition.onresult = function (event) {
+                const userInput = document.getElementById('user-input');
+                const transcript = event.results[0][0].transcript;
+                userInput.value = transcript;
+                sendMessage();
+            };
+
+            recognition.onspeechend = function () {
+                recognition.stop();
+            };
+
+            recognition.onerror = function (event) {
+                console.error('语音识别错误:', event.error);
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMessages();
+            connectWebSocket();
+            const sendButton = document.querySelector('.input-group button');
+            sendButton.addEventListener('click', sendMessage);
+            document.getElementById('user-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+### 2. 添加语音识别功能
+
+在 JavaScript 中添加 `startVoiceRecognition` 函数来启动语音识别：
+
+```javascript
+function startVoiceRecognition() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'zh-CN';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = function (event) {
+        const userInput = document.getElementById('user-input');
+        const transcript = event.results[0][0].transcript;
+        userInput.value = transcript;
+        sendMessage();
+    };
+
+    recognition.onspeechend = function () {
+        recognition.stop();
+    };
+
+    recognition.onerror = function (event) {
+        console.error('语音识别错误:', event.error);
+    };
+}
