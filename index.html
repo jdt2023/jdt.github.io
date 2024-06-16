@@ -1,4 +1,5 @@
 
+
 ```html
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -256,7 +257,7 @@
 
         function sendImage(imageSrc) {
             const chatBox = document.getElementById('chat-box');
-            const userMessage = { type: 'image', content: imageSrc };
+            const userMessage = { type: 'image', content: `你发送了一张图片: ${imageSrc}` };
             const imgElement = document.createElement('img');
             imgElement.src = imageSrc;
             imgElement.style.maxWidth = '100%';
@@ -268,5 +269,4 @@
 
         function sendVideo(videoSrc) {
             const chatBox = document.getElementById('chat-box');
-            const userMessage = { type: 'video', content: videoSrc };
-            const videoElement = document.createElement('video');
+            const userMessage = {
