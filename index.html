@@ -1,7 +1,4 @@
 
-
-### 更新后的 HTML 和 CSS
-
 ```html
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -57,21 +54,24 @@
             height: 300px;
             overflow-y: auto;
             background: #fafafa;
+            display: flex;
+            flex-direction: column;
         }
         .message {
             margin: 5px 0;
             padding: 10px;
             border-radius: 4px;
+            max-width: 70%;
         }
         .message.user {
             background-color: #e1ffc7;
-            align-self: flex-end;
-            text-align: right;
+            align-self: flex-start;
+            text-align: left;
         }
         .message.other {
             background-color: #f1f1f1;
-            align-self: flex-start;
-            text-align: left;
+            align-self: flex-end;
+            text-align: right;
         }
         .message img, .message video {
             max-width: 100%;
@@ -248,10 +248,10 @@
             const userInput = document.getElementById('user-input');
             const message = userInput.value.trim();
             if (message) {
-                const userMessage = { sender: 'user', type: 'text', content: `你: ${message}` };
+                const userMessage = { sender: 'user', type: 'text', content: message };
                 const userMessageElement = document.createElement('div');
                 userMessageElement.classList.add('message', 'user');
-                userMessageElement.textContent = userMessage.content;
+                userMessageElement.textContent = `你: ${message}`;
                 chatBox.appendChild(userMessageElement);
                 userInput.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -275,6 +275,4 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    sendVideo(e.target.result);
-                };
-                reader.readAs
+                   
