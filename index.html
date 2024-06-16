@@ -142,19 +142,7 @@
                 chatBox.appendChild(userMessage);
                 userInput.value = '';
 
-                // 模拟自动回复
-                setTimeout(() => {
-                    const botMessage = document.createElement('div');
-                    botMessage.textContent = '自动回复: 谢谢你的消息！';
-                    chatBox.appendChild(botMessage);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }, 1000);
-
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
-        }
-
-        // 调试信息
+              
         document.addEventListener('DOMContentLoaded', () => {
             console.log('页面已加载');
             const chatBox = document.getElementById('chat-box');
