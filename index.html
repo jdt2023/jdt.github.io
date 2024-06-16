@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -130,11 +131,9 @@
     </footer>
     <script>
         function sendMessage() {
-            console.log('sendMessage function called');
             const chatBox = document.getElementById('chat-box');
             const userInput = document.getElementById('user-input');
             const message = userInput.value.trim();
-            console.log('User input:', message);
             if (message) {
                 const userMessage = document.createElement('div');
                 userMessage.textContent = `你: ${message}`;
@@ -144,16 +143,16 @@
             }
         }
 
-        // 调试信息
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('页面已加载');
-            const chatBox = document.getElementById('chat-box');
-            const userInput = document.getElementById('user-input');
             const sendButton = document.querySelector('.input-group button');
-            console.log('聊天框:', chatBox);
-            console.log('输入框:', userInput);
-            console.log('发送按钮:', sendButton);
+            sendButton.addEventListener('click', sendMessage);
+            document.getElementById('user-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
         });
     </script>
 </body>
 </html>
+```
