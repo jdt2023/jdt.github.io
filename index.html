@@ -1,8 +1,3 @@
-为了确保图片和视频上传按钮正常显示，并且能选择图片和视频，首先需要确保 HTML 中有合适的样式和结构。其次，需要处理图片或视频选择的逻辑。
-
-### 更新 HTML 代码
-
-在输入框旁边添加图片和视频上传按钮：
 
 ```html
 <!DOCTYPE html>
@@ -85,6 +80,7 @@
         .input-group .voice-button {
             background: #007bff;
             margin-left: 10px;
+            border: 2px solid #0056b3;
         }
         .input-group .voice-button:hover {
             background: #0056b3;
@@ -92,6 +88,7 @@
         .input-group .image-button {
             background: #28a745;
             margin-left: 10px;
+            border: 2px solid #218838;
         }
         .input-group .image-button:hover {
             background: #218838;
@@ -99,6 +96,7 @@
         .input-group .video-button {
             background: #ffc107;
             margin-left: 10px;
+            border: 2px solid #e0a800;
         }
         .input-group .video-button:hover {
             background: #e0a800;
@@ -234,6 +232,28 @@
             }
         }
 
+        document.getElementById('image-input').addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    sendImage(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('video-input').addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    sendVideo(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         function sendImage(imageSrc) {
             const chatBox = document.getElementById('chat-box');
             const userMessage = { type: 'image', content: imageSrc };
@@ -250,24 +270,3 @@
             const chatBox = document.getElementById('chat-box');
             const userMessage = { type: 'video', content: videoSrc };
             const videoElement = document.createElement('video');
-            videoElement.src = videoSrc;
-            videoElement.controls = true;
-            videoElement.style.maxWidth = '100%';
-            chatBox.appendChild(videoElement);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            socket.send(JSON.stringify(userMessage));
-            saveMessage(userMessage);
-        }
-
-        function saveMessage(message) {
-            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            messages.push(message);
-            localStorage.setItem('chatMessages', JSON.stringify(messages));
-        }
-
-        function loadMessages() {
-            const chatBox = document.getElementById('chat-box');
-            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            messages.forEach(message => {
-                if (message.type === 'text') {
-                    const messageElement =
