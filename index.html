@@ -247,10 +247,10 @@
             const userInput = document.getElementById('user-input');
             const message = userInput.value.trim();
             if (message) {
-                const userMessage = { sender: 'user', type: 'text', content: `你: ${message}` };
+                const userMessage = { sender: 'user', type: 'text', content: message };
                 const userMessageElement = document.createElement('div');
                 userMessageElement.classList.add('message', 'user');
-                userMessageElement.textContent = userMessage.content;
+                userMessageElement.textContent = `你: ${message}`;
                 chatBox.appendChild(userMessageElement);
                 userInput.value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -268,4 +268,5 @@
             userMessageElement.appendChild(imgElement);
             chatBox.appendChild(userMessageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
-            socket.send
+            socket.send(JSON.stringify(userMessage));
+       
