@@ -1,51 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-time Chat</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .chat-container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .messages { list-style-type: none; padding: 0; }
-        .message { padding: 10px; margin-bottom: 5px; border-radius: 5px; }
-        .message.user { background-color: #e1ffc7; text-align: left; }
-        .message.other { background-color: #f1f1f1; text-align: right; }
-        #form { display: flex; }
-        #input { flex: 1; padding: 10px; font-size: 16px; }
-        #send { padding: 10px; font-size: 16px; }
-    </style>
+<style>
+  /* 這裡是 CSS 的部分，你可以修改它來改變網頁的外觀 */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #d6fdcc;
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+    margin:20px;
+  }
+  select {
+    display: block;
+    margin: 0 auto;
+    width: 200px;
+    height: 40px;
+    font-size: 20px;
+  }
+  img {
+    display: block;
+    margin: 20px auto;
+    width: 300px;
+    height: 300px;
+    border: 1px solid #ccc;
+  }
+  p {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+  }
+</style>
 </head>
 <body>
-    <div class="chat-container">
-        <ul id="messages" class="messages"></ul>
-        <form id="form">
-            <input id="input" autocomplete="off" placeholder="Type a message..." /><button id="send">Send</button>
-        </form>
-    </div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
-
-        const form = document.getElementById('form');
-        const input = document.getElementById('input');
-        const messages = document.getElementById('messages');
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (input.value) {
-                socket.emit('chat message', input.value);
-                input.value = '';
-            }
-        });
-
-        socket.on('chat message', (msg) => {
-            const item = document.createElement('li');
-            item.textContent = msg;
-            item.classList.add('message', socket.id === socket.id ? 'user' : 'other');
-            messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
-        });
-    </script>
+<h1>選擇一種網頁技術</h1>
+<select id="tech">
+  <option value="">請選擇</option>
+  <option value="html">HTML</option>
+  <option value="css">CSS</option>
+  <option value="js">JavaScript</option>
+</select>
+<img id="img" src="https://th.bing.com/th/id/OIG.OqBfWdZgaxYtLzbpZZs1?pid=ImgGn" alt="">
+<p id="desc"></p>
+<script>
+  // 這裡是 JavaScript 的部分，你可以修改它來改變網頁的行為
+  // 獲取網頁元素的參考
+  var tech = document.getElementById("tech");
+  var img = document.getElementById("img");
+  var desc = document.getElementById("desc");
+  // 定義一個函數，根據選擇的選項，顯示相應的圖片和介紹
+  function showInfo() {
+    // 獲取選擇的選項的值
+    var value = tech.value;
+    // 根據不同的值，設定圖片的來源和介紹的文字
+    if (value == "html") {
+      img.src = "https://th.bing.com/th/id/OIG.S_Fu_0m11gNudD1z4zij?pid=ImgGn"; // 這裡你可以用自己的圖片
+      desc.innerHTML = "HTML 是超文本標記語言，它是網頁的基礎，用來定義網頁的結構和內容。";
+    } else if (value == "css") {
+      img.src = "https://th.bing.com/th/id/OIG.OqBfWdZgaxYtLzbpZZs1?pid=ImgGn"; // 這裡你可以用自己的圖片
+      desc.innerHTML = "CSS 是層疊樣式表，它是網頁的裝飾，用來定義網頁的外觀和佈局。";
+    } else if (value == "js") {
+      img.src = "https://th.bing.com/th/id/OIG.cZLxOv3PTpUNabh6OEwu?pid=ImgGn"; // 這裡你可以用自己的圖片
+      desc.innerHTML = "JavaScript 是一種腳本語言，它是網頁的靈魂，用來定義網頁的行為和互動。";
+    } else {
+      img.src = "";
+      desc.innerHTML = "";
+    }
+  }
+  // 為選擇框添加一個事件監聽器，當選擇發生變化時，調用函數
+  tech.addEventListener("change", showInfo);
+</script>
 </body>
 </html>
