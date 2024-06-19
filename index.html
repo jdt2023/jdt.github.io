@@ -1,88 +1,72 @@
-/**
-	 * @brief 增加消息中可选中的链接的正则表达式，用于匹配消息，满足条件段落可以被用户点击。
-	 * @param numberRegex 链接的正则表达式
-	 */
-	- (void)setMessageLinkRegex:(NSString *)linkRegex;
+site_name: OneBot 12 标准（候选）
+repo_name: botuniverse/onebot
+repo_url: https://github.com/botuniverse/onebot
+edit_uri: blob/main/specs/
+docs_dir: specs
+theme:
+  name: material
+  language: zh
+  logo: assets/images/logo-white.png
+  favicon: assets/images/logo.png
+  palette:
+    scheme: onebot
+  features:
+    - navigation.sections
+    - navigation.tabs
+    - search.suggest
+    - search.highlight
+markdown_extensions:
+  - admonition
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences
+extra:
+  search:
+    language: jp
+  analytics:
+    provider: google
+    property: G-RT0B6ZLNQH
+extra_javascript:
+  - assets/javascripts/config.js
+extra_css:
+  - assets/stylesheets/extra.css
 
-	/**
-	 * @brief 增加消息中可选中的email的正则表达式，用于匹配消息，满足条件段落可以被用户点击。
-	 * @param emailRegex email的正则表达式
-	 */
-	- (void)setMessageEmailRegex:(NSString *)emailRegex;
-
-	/**
-	 * @brief 设置收到消息的声音；
-	 * @param soundFileName 声音文件
-	 */
-	- (void)setIncomingMessageSoundFileName:(NSString *)soundFileName;
-
-	/**
-	 * @brief 是否支持发送语音消息；
-	 * @param enable YES:支持发送语音消息 NO:不支持发送语音消息
-	 */
-	- (void)enableSendVoiceMessage:(BOOL)enable;
-
-	/**
-	 * @brief 是否支持发送图片消息；
-	 * @param enable YES:支持发送图片消息 NO:不支持发送图片消息
-	 */
-	- (void)enableSendImageMessage:(BOOL)enable;
-
-	/**
-	 * @brief 是否支持对方头像的显示；
-	 * @param enable YES:支持 NO:不支持
-	 */
-	- (void)enableIncomingAvatar:(BOOL)enable;
-
-	/**
-	 * @brief 是否支持当前用户头像的显示
-	 *
-	 * @param enable YES:支持 NO:不支持
-	 */
-	- (void)enableOutgoingAvatar:(BOOL)enable;
-
-	/**
-	 * @brief 是否开启接受/发送消息的声音；
-	 * @param enable YES:开启声音 NO:关闭声音
-	 */
-	- (void)enableMessageSound:(BOOL)enable;
-
-	/**
-	 * @brief 是否开启下拉刷新（顶部刷新）
-	 *
-	 * @param enable YES:支持 NO:不支持
-	 */
-	- (void)enableTopPullRefresh:(BOOL)enable;
-
-	/**
-	 *  @brief 设置下拉/上拉刷新的颜色
-	 *
-	 *  @param pullRefreshColor 颜色
-	 */
-	- (void)setPullRefreshColor:(UIColor *)pullRefreshColor;
-
-	/**
-	 * @brief 设置发送过来的message的文字颜色；
-	 * @param textColor 文字颜色
-	 */
-	- (void)setIncomingMessageTextColor:(UIColor *)textColor;
-
-	/**
-	 *  @brief 设置发送过来的message气泡颜色
-	 *
-	 *  @param bubbleColor 气泡颜色
-	 */
-	- (void)setIncomingBubbleColor:(UIColor *)bubbleColor;
-
-	/**
-	 * @brief 设置发送出去的message的文字颜色；
-	 * @param textColor 文字颜色
-	 */
-	- (void)setOutgoingMessageTextColor:(UIColor *)textColor;
-
-	/**
-	 *  @brief 设置发送的message气泡颜色
-	 *
-	 *  @param bubbleColor 气泡颜色
-	 */
-	- (void)setOutgoingBubbleColor:(UIColor *)bubbleColor;
+nav:
+  - 主页: index.md
+  - 术语表: glossary.md
+  - OneBot Connect:
+    - 概述: connect/index.md
+    - 通信方式:
+      - HTTP: connect/communication/http.md
+      - HTTP Webhook: connect/communication/http-webhook.md
+      - 正向 WebSocket: connect/communication/websocket.md
+      - 反向 WebSocket: connect/communication/websocket-reverse.md
+    - 数据协议:
+      - 基本数据类型: connect/data-protocol/basic-types.md
+      - 事件: connect/data-protocol/event.md
+      - 动作请求: connect/data-protocol/action-request.md
+      - 动作响应: connect/data-protocol/action-response.md
+  - 接口定义:
+    - 概述: interface/index.md
+    - 扩展规则: interface/rules.md
+    - 元接口:
+      - 元事件: interface/meta/events.md
+      - 元动作: interface/meta/actions.md
+    - 消息接口:
+      - 消息数据类型: interface/message/type.md
+      - 消息段: interface/message/segments.md
+      - 消息动作: interface/message/actions.md
+    - 单用户接口（Private / Direct）:
+      - 用户消息事件: interface/user/message-events.md
+      - 用户通知事件: interface/user/notice-events.md
+      - 用户动作: interface/user/actions.md
+    - 单级群组接口（Group）:
+      - 群消息事件: interface/group/message-events.md
+      - 群通知事件: interface/group/notice-events.md
+      - 群动作: interface/group/actions.md
+    - 两级群组接口（Guild-Channel）:
+      - 群组消息事件: interface/guild/message-events.md
+      - 群组通知事件: interface/guild/notice-events.md
+      - 群组动作: interface/guild/actions.md
+    - 文件接口:
+      - 文件动作: interface/file/actions.md
